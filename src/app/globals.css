@@ -75,20 +75,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --surface: #171717;
-    --surface-hover: #262626;
-    --border: #2e2e2e;
-    --text-muted: #a3a3a3;
-
-    --red-bg: #2a1414;
-    --red-strong-bg: #3a1616;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
