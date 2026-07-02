@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+:root {
+  /* Neutral scale (gray, cool-neutral — Tailwind "neutral" family). Background,
+     text, borders, and every non-status surface come from this scale only. */
+  --background: #ffffff;
+  --foreground: #171717;
+  --surface: #f5f5f5;
+  --surface-hover: #e5e5e5;
+  --border: #e5e5e5;
+  --text-muted: #737373;
+
+  /* Brand palette is red / white / gray — no other hues. Two red intensities
+     carry two different meanings, not decoration:
+     --red (vivid)  = "live" status, happening right now (Live View UI plan R6)
+     --red-strong (deep) = irreversible confirmation actions (Panitia Dashboard
+       UI plan R5/R7) — deliberately darker/more saturated than "live" so a
+       panitia reads it as a different, higher-stakes signal. */
+  --red: #dc2626;
+  --red-bg: #fef2f2;
+  --red-strong: #991b1b;
+  --red-strong-bg: #fee2e2;
+
+  /* Match status — only "live" is a prominent color; pending/finished/corrected
+     are plain text/icon treatments per the Live View UI plan's R6/R7. All
+     three non-live states read as gray, distinguished only by label/icon. */
+  --status-live: var(--red);
+  --status-live-bg: var(--red-bg);
+  --status-pending: var(--text-muted);
+  --status-finished: var(--foreground);
+  --status-corrected: var(--text-muted);
+
+  /* Consequential-action accent (Mark Finished / Correct Score confirmation
+     dialogs, per the Panitia Dashboard UI plan's R5/R7). */
+  --action-danger: var(--red-strong);
+  --action-danger-bg: var(--red-strong-bg);
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+
+  /* Elevation — Tailwind's default shadow scale is used directly (shadow-sm/
+     shadow-md/shadow-lg), not redefined here. Convention: shadow-sm for cards
+     at rest, shadow-lg for Radix Dialog/Popover content, none for inline
+     elements (badges, buttons). */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-border: var(--border);
+  --color-text-muted: var(--text-muted);
+
+  --color-red: var(--red);
+  --color-red-bg: var(--red-bg);
+  --color-red-strong: var(--red-strong);
+  --color-red-strong-bg: var(--red-strong-bg);
+
+  --color-status-live: var(--status-live);
+  --color-status-live-bg: var(--status-live-bg);
+  --color-status-pending: var(--status-pending);
+  --color-status-finished: var(--status-finished);
+  --color-status-corrected: var(--status-corrected);
+
+  --color-action-danger: var(--action-danger);
+  --color-action-danger-bg: var(--action-danger-bg);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --surface: #171717;
+    --surface-hover: #262626;
+    --border: #2e2e2e;
+    --text-muted: #a3a3a3;
+
+    --red-bg: #2a1414;
+    --red-strong-bg: #3a1616;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
