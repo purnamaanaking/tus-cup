@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trophy } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 
 const INVALID_CREDENTIALS_MESSAGE = "Email atau password salah.";
@@ -47,16 +47,20 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-surface p-4">
-      <div className="w-full max-w-sm overflow-hidden rounded-lg bg-background shadow-sm">
-        <div className="flex h-24 items-center justify-center bg-red text-background">
-          <span className="text-lg font-semibold">Tus-Cup</span>
+      <div className="w-full max-w-sm overflow-hidden rounded-lg bg-background shadow-lg">
+        <div className="flex h-28 flex-col items-center justify-center gap-2 bg-linear-to-br from-red to-red-strong text-background">
+          <Trophy className="size-6" />
+          <span className="text-lg font-semibold tracking-tight">Tus-Cup</span>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-6">
           <h1 className="text-base font-semibold">Masuk sebagai Panitia</h1>
 
           {errorMessage ? (
-            <p role="alert" className="text-xs text-red-strong">
+            <p
+              role="alert"
+              className="animate-in fade-in slide-in-from-top-1 rounded-sm bg-red-strong-bg px-3 py-2 text-xs text-red-strong duration-150"
+            >
               {errorMessage}
             </p>
           ) : null}
@@ -72,7 +76,7 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="rounded-sm border border-border px-3 py-2 text-sm"
+              className="rounded-sm border border-border px-3 py-2 text-sm outline-none transition-colors focus:border-red focus:ring-2 focus:ring-red-bg"
             />
           </div>
 
@@ -87,14 +91,14 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="rounded-sm border border-border px-3 py-2 text-sm"
+              className="rounded-sm border border-border px-3 py-2 text-sm outline-none transition-colors focus:border-red focus:ring-2 focus:ring-red-bg"
             />
           </div>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="inline-flex items-center justify-center gap-2 rounded-sm bg-red px-4 py-2 text-sm font-semibold text-background disabled:opacity-70"
+            className="inline-flex items-center justify-center gap-2 rounded-sm bg-red px-4 py-2 text-sm font-semibold text-background transition-colors hover:bg-red-strong disabled:opacity-70 disabled:hover:bg-red"
           >
             {isSubmitting ? (
               <Loader2 data-testid="login-spinner" className="size-4 animate-spin" />
@@ -105,7 +109,7 @@ export default function LoginPage() {
           {/* Not yet wired to a reset flow (out of scope per plan R5) —
               rendered as inert text rather than href="#" to avoid an
               unintended scroll/hash side effect on click. */}
-          <span className="text-xs text-text-muted" aria-disabled="true">
+          <span className="text-center text-xs text-text-muted" aria-disabled="true">
             Lupa password?
           </span>
         </form>
