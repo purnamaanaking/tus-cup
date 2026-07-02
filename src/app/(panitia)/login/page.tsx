@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 
-const GENERIC_ERROR_MESSAGE = "Email atau password salah.";
+const INVALID_CREDENTIALS_MESSAGE = "Email atau password salah.";
+const UNEXPECTED_ERROR_MESSAGE = "Terjadi kesalahan. Silakan coba lagi.";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -21,15 +22,27 @@ export default function LoginPage() {
     setIsSubmitting(true);
     setErrorMessage(null);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (error) {
-      setErrorMessage(GENERIC_ERROR_MESSAGE);
+      if (error) {
+        // Only "wrong email or password" gets the field-agnostic message
+        // (R4). Network/server/rate-limit failures get a distinct message
+        // so panitia don't mistake an outage for a credentials mistake.
+        setErrorMessage(
+          error.code === "invalid_credentials"
+            ? INVALID_CREDENTIALS_MESSAGE
+            : UNEXPECTED_ERROR_MESSAGE
+        );
+        setIsSubmitting(false);
+        return;
+      }
+
+      router.push("/events");
+    } catch {
+      setErrorMessage(UNEXPECTED_ERROR_MESSAGE);
       setIsSubmitting(false);
-      return;
     }
-
-    router.push("/events");
   }
 
   return (
@@ -89,9 +102,12 @@ export default function LoginPage() {
             Masuk
           </button>
 
-          <a href="#" className="text-xs text-text-muted">
+          {/* Not yet wired to a reset flow (out of scope per plan R5) —
+              rendered as inert text rather than href="#" to avoid an
+              unintended scroll/hash side effect on click. */}
+          <span className="text-xs text-text-muted" aria-disabled="true">
             Lupa password?
-          </a>
+          </span>
         </form>
       </div>
     </main>

@@ -89,10 +89,10 @@ describe("LoginPage", () => {
     expect(emailInput.required).toBe(true);
   });
 
-  it("shows a generic error message on failed login without revealing which field was wrong", async () => {
+  it("shows a generic error message on invalid credentials without revealing which field was wrong", async () => {
     signInWithPassword.mockResolvedValue({
       data: {},
-      error: { message: "Invalid login credentials" },
+      error: { message: "Invalid login credentials", code: "invalid_credentials" },
     });
     const user = userEvent.setup();
     render(<LoginPage />);
@@ -107,6 +107,38 @@ describe("LoginPage", () => {
     // would leak which field was incorrect.
     expect(error).toHaveTextContent(/email atau password salah/i);
     expect(error).not.toHaveTextContent(/email tidak ditemukan/i);
+    expect(push).not.toHaveBeenCalled();
+  });
+
+  it("shows a distinct error for non-credential failures (network/server/rate-limit)", async () => {
+    signInWithPassword.mockResolvedValue({
+      data: {},
+      error: { message: "Request failed", code: "over_request_rate_limit" },
+    });
+    const user = userEvent.setup();
+    render(<LoginPage />);
+
+    await user.type(screen.getByLabelText(/email/i), "panitia@tuscup.test");
+    await user.type(screen.getByLabelText(/password/i), "correct-password");
+    await user.click(screen.getByRole("button", { name: /masuk/i }));
+
+    const error = await screen.findByRole("alert");
+    expect(error).not.toHaveTextContent(/email atau password salah/i);
+    expect(push).not.toHaveBeenCalled();
+  });
+
+  it("shows an error and re-enables the form if signInWithPassword throws instead of returning an error", async () => {
+    signInWithPassword.mockRejectedValue(new Error("unexpected client failure"));
+    const user = userEvent.setup();
+    render(<LoginPage />);
+
+    await user.type(screen.getByLabelText(/email/i), "panitia@tuscup.test");
+    await user.type(screen.getByLabelText(/password/i), "correct-password");
+    const button = screen.getByRole("button", { name: /masuk/i });
+    await user.click(button);
+
+    await waitFor(() => expect(button).not.toBeDisabled());
+    expect(await screen.findByRole("alert")).toBeInTheDocument();
     expect(push).not.toHaveBeenCalled();
   });
 
