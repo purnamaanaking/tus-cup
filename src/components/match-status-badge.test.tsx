@@ -16,6 +16,7 @@ describe("MatchStatusBadge", () => {
     const badge = screen.getByTestId("match-status-badge");
     expect(badge).toHaveAttribute("data-status", "pending");
     expect(badge.className).not.toContain("bg-status-live-bg");
+    expect(badge.className).toContain("text-status-pending");
   });
 
   it("renders a plain label for status finished", () => {
@@ -23,6 +24,7 @@ describe("MatchStatusBadge", () => {
     const badge = screen.getByTestId("match-status-badge");
     expect(badge).toHaveAttribute("data-status", "finished");
     expect(badge.className).not.toContain("bg-status-live-bg");
+    expect(badge.className).toContain("text-status-finished");
   });
 
   it("pending and finished badges are visually distinct from the live treatment", () => {
@@ -34,6 +36,17 @@ describe("MatchStatusBadge", () => {
     const pendingClasses = screen.getByTestId("match-status-badge").className;
 
     expect(pendingClasses).not.toBe(liveClasses);
+  });
+
+  it("pending and finished badges are visually distinct from each other", () => {
+    const { unmount } = render(<MatchStatusBadge status="pending" />);
+    const pendingClasses = screen.getByTestId("match-status-badge").className;
+    unmount();
+
+    render(<MatchStatusBadge status="finished" />);
+    const finishedClasses = screen.getByTestId("match-status-badge").className;
+
+    expect(finishedClasses).not.toBe(pendingClasses);
   });
 
   it("does not render a corrected label for a finished match when corrected flag is omitted", () => {

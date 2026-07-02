@@ -11,6 +11,12 @@ const STATUS_LABEL: Record<MatchStatus, string> = {
   finished: "Selesai",
 };
 
+const STATUS_TEXT_CLASS: Record<MatchStatus, string> = {
+  pending: "text-status-pending",
+  live: "text-status-live",
+  finished: "text-status-finished",
+};
+
 export function MatchStatusBadge({ status, corrected = false }: MatchStatusBadgeProps) {
   const isLive = status === "live";
 
@@ -21,7 +27,7 @@ export function MatchStatusBadge({ status, corrected = false }: MatchStatusBadge
       className={
         isLive
           ? "inline-flex items-center gap-1 rounded-sm bg-status-live-bg px-2 py-1 text-xs font-semibold text-status-live"
-          : "inline-flex items-center gap-1 text-xs text-text-muted"
+          : `inline-flex items-center gap-1 text-xs ${STATUS_TEXT_CLASS[status]}`
       }
     >
       {STATUS_LABEL[status]}
